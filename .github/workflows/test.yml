@@ -11,7 +11,7 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
 
-     steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -59,7 +59,7 @@ jobs:
             pool=$(echo "$response" | grep -o 'X-App-Pool: [^[:space:]]*' | cut -d' ' -f2 || echo "unknown")
             
             if [ "$status" != "200" ]; then
-              echo "❌ CRITICAL FAILURE: Request $i got status $status (expected 200)"
+              echo "CRITICAL FAILURE: Request $i got status $status (expected 200)"
               echo "Failover did not work - client saw error!"
               exit 1
             fi
@@ -73,14 +73,14 @@ jobs:
           
           green_percentage=$((green_count * 100 / total_requests))
           echo ""
-          echo "📊 Results: $green_count/$total_requests requests served by Green ($green_percentage%)"
+          echo "Results: $green_count/$total_requests requests served by Green ($green_percentage%)"
           
           if [ $green_percentage -lt 95 ]; then
-            echo "❌ Failed: Only $green_percentage% from Green (required ≥95%)"
+            echo "Failed: Only $green_percentage% from Green (required ≥95%)"
             exit 1
           fi
           
-          echo "✅ Failover successful: $green_percentage% from Green, 0 client errors"
+          echo "Failover successful: $green_percentage% from Green, 0 client errors"
 
       - name: Show container logs on failure
         if: failure()
