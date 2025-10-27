@@ -71,7 +71,7 @@ jobs:
             echo "$pool"
             
             if [ "$status" != "200" ]; then
-              echo "CRITICAL FAILURE: Request $i got status $status (expected 200)"
+              echo "Failed: Expected 200, got status $status
               echo "Failover did not work - client saw error!"
               exit 1
             fi
@@ -80,7 +80,7 @@ jobs:
               ((green_count++))
             fi
             
-            echo "Request $i: Status=$status, Pool=$pool"
+            echo "Request: Status=$status, Pool=$pool"
           done
           
           green_percentage=$((green_count * 100 / total_requests))
