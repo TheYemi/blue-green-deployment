@@ -27,6 +27,7 @@ services:
     image: nginx:alpine
     container_name: nginx
     ports:
+      - "80:80"
       - "8080:80"
     volumes:
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
