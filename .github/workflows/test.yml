@@ -72,7 +72,7 @@ jobs:
               exit 1
             fi
             
-            if [[ "$pool" == "green" ]]; then
+            if [[ "${pool,,}" == "green" ]]; then
               ((green_count++))
             fi
             
