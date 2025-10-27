@@ -33,8 +33,10 @@ jobs:
         run: |
           for i in {1..10}; do
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
+            echo "$response"
             status=$(echo "$response" | tail -n1)
             pool=$(echo "$response" | grep -i 'X-App-Pool: ' | awk '{print tolower($2)}' | tr -d '\r')
+            echo "$pool"
 
             if [ "$status" != "200" ]; then
               echo "Failed: Expected 200, got $status"
@@ -65,7 +67,8 @@ jobs:
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
             echo "$response"
             status=$(echo "$response" | tail -n1)
-            pool=$(echo "$response" | grep -o 'X-App-Pool: [^[:space:]]*' | cut -d' ' -f2 || echo "unknown")
+            pool=$(echo "$response" | grep -o 'X-App-Pool: ' | awk '{print tolower($2)}' | tr -d '\r')
+            echo "$pool"
             
             if [ "$status" != "200" ]; then
               echo "CRITICAL FAILURE: Request $i got status $status (expected 200)"
@@ -73,7 +76,7 @@ jobs:
               exit 1
             fi
             
-            if [[ "${pool,,}" == "green" ]]; then
+            if [[ "$pool" == "green" ]]; then
               ((green_count++))
             fi
             
