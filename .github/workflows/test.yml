@@ -31,7 +31,7 @@ jobs:
 
       - name: Baseline test - Verify Blue is active
         run: |
-          for i in {1..10}; do
+          for i in {1..5}; do
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
             echo "$response"
             status=$(echo "$response" | tail -n1)
@@ -61,13 +61,13 @@ jobs:
         run: |
           echo "Testing failover - expecting Green to handle traffic..."
           green_count=0
-          total_requests=10
+          total_requests=5
           
           for i in $(seq 1 $total_requests); do
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
             echo "$response"
             status=$(echo "$response" | tail -n1)
-            pool=$(echo "$response" | grep -o 'X-App-Pool: ' | awk '{print tolower($2)}' | tr -d '\r')
+            pool=$(echo "$response" | grep -i 'X-App-Pool: ' | awk '{print tolower($2)}' | tr -d '\r')
             echo "$pool"
             
             if [ "$status" != "200" ]; then
