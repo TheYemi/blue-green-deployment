@@ -1,6 +1,6 @@
 upstream backend {
-    server app_blue:3000 max_fails=1 fail_timeout=10s ${BLUE_BACKUP};
-    server app_green:3000 max_fails=1 fail_timeout=10s ${GREEN_BACKUP};
+    server blue:3000 max_fails=1 fail_timeout=10s ${BLUE_BACKUP};
+    server green:3000 max_fails=1 fail_timeout=10s ${GREEN_BACKUP};
 }
 
 server {

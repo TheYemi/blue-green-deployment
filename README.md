@@ -10,8 +10,11 @@ How to Run
     - BLUE_IMAGE=<blue_image_url>
     - GREEN_IMAGE=<green_image_url>
     - ACTIVE_POOL=blue
-    - RELEASE_ID_BLUE=blue-v1
-    - RELEASE_ID_GREEN=green-v1
+    - RELEASE_ID_BLUE=blue-v1.0.0-green
+    - RELEASE_ID_GREEN=green-v1.0.0-green
+    - BLUE_BACKUP=
+    - GREEN_BACKUP=backup
+    - PORT=3000
 
 3. Start all services
 
