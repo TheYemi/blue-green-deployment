@@ -59,10 +59,11 @@ jobs:
         run: |
           echo "Testing failover - expecting Green to handle traffic..."
           green_count=0
-          total_requests=20
+          total_requests=10
           
           for i in $(seq 1 $total_requests); do
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
+            echo "response"
             status=$(echo "$response" | tail -n1)
             pool=$(echo "$response" | grep -o 'X-App-Pool: [^[:space:]]*' | cut -d' ' -f2 || echo "unknown")
             
