@@ -34,7 +34,7 @@ jobs:
           for i in {1..10}; do
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
             status=$(echo "$response" | tail -n1)
-            pool=$(echo "$response" | grep -i 'X-App-Pool: ' | awk '{print \$2' | tr -d '\r')
+            pool=$(echo "$response" | grep -i 'X-App-Pool: ' | awk '{print $2' | tr -d '\r')
 
             if [ "$status" != "200" ]; then
               echo "Failed: Expected 200, got $status"
