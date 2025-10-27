@@ -67,9 +67,11 @@ jobs:
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
             echo "$response"
             status=$(echo "$response" | tail -n1)
+            set +e
             pool=$(echo "$response" | grep -i 'X-App-Pool: ' | awk '{print tolower($2)}' | tr -d '\r')
+            set -e
             echo "$pool"
-            echo "Request $i pool=$pool"
+            echo "Request $i Pool:$pool"
             
             if [ "$status" != "200" ]; then
               echo "Failed: Expected 200, got status $status"
@@ -83,7 +85,6 @@ jobs:
           done
           
           green_percentage=$((green_count * 100 / total_requests))
-          echo ""
           echo "Results: $green_count/$total_requests requests served by Green ($green_percentage%)"
           
           if [ $green_percentage -lt 80 ]; then
