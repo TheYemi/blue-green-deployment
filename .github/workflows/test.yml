@@ -87,6 +87,8 @@ jobs:
           green_percentage=$((green_count * 100 / total_requests))
           echo "Results: $green_count/$total_requests requests served by Green ($green_percentage%)"
           
+          echo "DEBUG: green_count=$green_count total_requests=$total_requests"
+
           if [ $green_percentage -lt 80 ]; then
             echo "Failed: Only $green_percentage% from Green (required ≥80%)"
             exit 1
