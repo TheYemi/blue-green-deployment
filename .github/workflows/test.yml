@@ -71,7 +71,7 @@ jobs:
             echo "$pool"
             
             if [ "$status" != "200" ]; then
-              echo "Failed: Expected 200, got status $status
+              echo "Failed: Expected 200, got status $status"
               echo "Failover did not work - client saw error!"
               exit 1
             fi
