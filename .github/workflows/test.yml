@@ -62,7 +62,7 @@ jobs:
           total_requests=20
           
           for i in $(seq 1 $total_requests); do
-            response=$(curl -s -w "\n%{http_code}" http://localhost:8080/version)
+            response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
             status=$(echo "$response" | tail -n1)
             pool=$(echo "$response" | grep -o 'X-App-Pool: [^[:space:]]*' | cut -d' ' -f2 || echo "unknown")
             
