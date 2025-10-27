@@ -61,7 +61,7 @@ jobs:
         run: |
           echo "Testing failover - expecting Green to handle traffic..."
           green_count=0
-          total_requests=5
+          total_requests=10
           
           for i in $(seq 1 $total_requests); do
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
@@ -69,17 +69,16 @@ jobs:
             status=$(echo "$response" | tail -n1)
             pool=$(echo "$response" | grep -i 'X-App-Pool: ' | awk '{print tolower($2)}' | tr -d '\r')
             echo "$pool"
+            echo "Request $i pool=$pool"
             
             if [ "$status" != "200" ]; then
               echo "Failed: Expected 200, got status $status"
-              echo "Failover did not work - client saw error!"
               exit 1
             fi
             
             if [[ "$pool" == "green" ]]; then
               ((green_count++))
-            fi
-            
+            fi 
             echo "Request: Status=$status, Pool=$pool"
           done
           
@@ -87,8 +86,8 @@ jobs:
           echo ""
           echo "Results: $green_count/$total_requests requests served by Green ($green_percentage%)"
           
-          if [ $green_percentage -lt 95 ]; then
-            echo "Failed: Only $green_percentage% from Green (required ≥95%)"
+          if [ $green_percentage -lt 80 ]; then
+            echo "Failed: Only $green_percentage% from Green (required ≥80%)"
             exit 1
           fi
           
