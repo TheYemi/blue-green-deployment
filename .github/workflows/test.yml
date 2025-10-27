@@ -67,9 +67,7 @@ jobs:
             response=$(curl -i -s -w "\n%{http_code}" http://localhost:8080/version)
             echo "$response"
             status=$(echo "$response" | tail -n1)
-            set +e
             pool=$(echo "$response" | grep -i 'X-App-Pool: ' | awk '{print tolower($2)}' | tr -d '\r')
-            set -e
             echo "$pool"
             echo "Request $i Pool:$pool"
             
@@ -78,17 +76,17 @@ jobs:
               exit 1
             fi
             
-            if [[ "$pool" == "green" ]]; then
-              ((green_count++))
+            if [ "$pool" = "green" ]; then
+              green_count=$((green_count + 1))
             fi 
             echo "Request: Status=$status, Pool=$pool"
           done
           
+          echo "DEBUG: green_count=$green_count total_requests=$total_requests"
+
           green_percentage=$((green_count * 100 / total_requests))
           echo "Results: $green_count/$total_requests requests served by Green ($green_percentage%)"
           
-          echo "DEBUG: green_count=$green_count total_requests=$total_requests"
-
           if [ $green_percentage -lt 80 ]; then
             echo "Failed: Only $green_percentage% from Green (required ≥80%)"
             exit 1
