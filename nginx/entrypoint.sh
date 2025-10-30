@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Set backups based on ACTIVE_POOL
 if [ "$ACTIVE_POOL" = "blue" ]; then
     export BLUE_BACKUP=""
     export GREEN_BACKUP="backup"
@@ -11,8 +12,15 @@ else
     exit 1
 fi
 
-envsubst '${BLUE_BACKUP} ${GREEN_BACKUP}' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/conf.d/default.conf
+# Substitute all variables in template and create final config
+envsubst '${ACTIVE_POOL} ${RELEASE_ID} ${BLUE_BACKUP} ${GREEN_BACKUP}' \
+    < /etc/nginx/templates/default.conf.template \
+    > /etc/nginx/conf.d/default.conf
 
 chmod 644 /etc/nginx/conf.d/default.conf
 
-echo "Nginx configuration generated with ACTIVE_POOL=${ACTIVE_POOL}"
+echo "Nginx configuration generated with ACTIVE_POOL=${ACTIVE_POOL}, RELEASE_ID=${RELEASE_ID}"
+
+# Start nginx in foreground
+nginx -g 'daemon off;'
+

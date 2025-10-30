@@ -32,11 +32,29 @@ services:
     volumes:
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./nginx/reload.sh:/usr/local/bin/reload.sh:ro
+      - ./nginx/logs:/var/log/nginx
     environment:
       - ACTIVE_POOL=${ACTIVE_POOL}
       - BLUE_BACKUP=${BLUE_BACKUP}
       - GREEN_BACKUP=${GREEN_BACKUP}
+      - RELEASE_ID=${RELEASE_ID_ACTIVE}
     depends_on:
       - app_blue
       - app_green
     restart: unless-stopped
+
+  alert_watcher:
+    build: ./alert_watcher                      
+    container_name: alert_watcher
+    restart: unless-stopped
+    volumes:
+      - ./nginx/logs:/var/log/nginx:ro
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - nginx
+
+volumes:
+  nginx_logs:
