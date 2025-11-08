@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 upstream backend {
     server blue:3000 max_fails=1 fail_timeout=10s ${BLUE_BACKUP};
     server green:3000 max_fails=1 fail_timeout=10s ${GREEN_BACKUP};
@@ -38,3 +39,45 @@ server {
         proxy_set_header X-Release-Id $RELEASE_ID;
     }
 }
+=======
+upstream backend {
+    server blue:3000 max_fails=1 fail_timeout=10s ${BLUE_BACKUP};
+    server green:3000 max_fails=1 fail_timeout=10s ${GREEN_BACKUP};
+}
+
+log_format detailed '$remote_addr $time_local '
+                    'pool=${ACTIVE_POOL} '
+                    'release=${RELEASE_ID} '
+                    'upstream=$upstream_addr '
+                    'status=$upstream_status '
+                    'req_time=$request_time '
+                    'up_resp_time=$upstream_response_time';
+
+access_log /var/log/nginx/access.log detailed;
+error_log  /var/log/nginx/error.log warn;
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://backend;
+
+        proxy_connect_timeout 2s;
+        proxy_read_timeout 5s;
+        proxy_send_timeout 5s;
+
+	proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
+        proxy_next_upstream_tries 2;
+        proxy_next_upstream_timeout 10s;
+
+	proxy_pass_request_headers on;
+
+	proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+	proxy_set_header X-App-Pool $ACTIVE_POOL;
+        proxy_set_header X-Release-Id $RELEASE_ID;
+    }
+}
+>>>>>>> 2e6863a83218c7697e4dd5ff946cb2a150ed941c

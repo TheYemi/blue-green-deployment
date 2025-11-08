@@ -30,7 +30,11 @@ services:
     volumes:
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./nginx/reload.sh:/usr/local/bin/reload.sh:ro
+<<<<<<< HEAD
       - nginx_logs:/var/log/nginx
+=======
+      - ./nginx/logs:/var/log/nginx
+>>>>>>> 2e6863a83218c7697e4dd5ff946cb2a150ed941c
     environment:
       - ACTIVE_POOL=${ACTIVE_POOL}
       - BLUE_BACKUP=${BLUE_BACKUP}
@@ -46,9 +50,17 @@ services:
     container_name: alert_watcher
     restart: unless-stopped
     volumes:
+<<<<<<< HEAD
       - nginx_logs:/var/log/nginx:ro
     env_file:
       - .env
+=======
+      - ./nginx/logs:/var/log/nginx:ro
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+>>>>>>> 2e6863a83218c7697e4dd5ff946cb2a150ed941c
     depends_on:
       - nginx
 
