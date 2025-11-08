@@ -3,6 +3,17 @@ upstream backend {
     server green:3000 max_fails=1 fail_timeout=10s ${GREEN_BACKUP};
 }
 
+log_format detailed_log
+                    '$remote_addr $time_local '
+                    'pool=$upstream_http_x_app_pool '
+                    'release=$upstream_http_x_release_id '
+                    'upstream=$upstream_addr '
+                    'status=$upstream_status '
+                    'req_time=$request_time '
+                    'up_resp_time=$upstream_response_time';
+
+access_log /var/log/nginx/access.log detailed_log;
+
 server {
     listen 80;
 
@@ -13,14 +24,17 @@ server {
         proxy_read_timeout 5s;
         proxy_send_timeout 5s;
 
-	proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
+	    proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
         proxy_next_upstream_tries 2;
         proxy_next_upstream_timeout 10s;
 
-	proxy_pass_request_headers on;
+	    proxy_pass_request_headers on;
 
-	proxy_set_header Host $host;
+	    proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+	    proxy_set_header X-App-Pool $ACTIVE_POOL;
+        proxy_set_header X-Release-Id $RELEASE_ID;
     }
 }
